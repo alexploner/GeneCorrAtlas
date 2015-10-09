@@ -1,0 +1,11 @@
+Package: GeneCorrAtlas
+Title: Display the Atlas of Genetic Correlations (Bulik-Sullivan et al. 2015)
+Version: 0.0.0.9000
+Authors@R: person("Alexander", "Ploner", email = "Alexander.Ploner@ki.se", role = c("aut", "cre"))
+Description: Bulik-Sullivan et al. recently (2105) published an atlas of genetic
+    correlations for 50 different traits. This package wraps the more than 1000
+    correlation coefficients involved and offers convenient functions for display
+    and plotting.
+Depends: R (>= 3.2.2)
+License: GPL-3
+LazyData: true
