@@ -3,7 +3,9 @@
 \name{gcatlas}
 \alias{gcatlas}
 \title{Atlas of genetic correlations}
-\format{A data frame with 1176 rows and 6 variables}
+\format{A data frame with 1176 rows and 6 variables. The correlations are
+given in the order as the appear in the lower triangle of the full correlation
+matrix, by column.}
 \source{
 \url{http://www.nature.com/ng/journal/vaop/ncurrent/extref/ng.3406-S2.csv}
 }
