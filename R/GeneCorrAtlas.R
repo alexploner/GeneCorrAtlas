@@ -30,7 +30,9 @@ NULL
 #'   \item p, the corresponding p-value
 #' }
 #'
-#' @format A data frame with 1176 rows and 6 variables
+#' @format A data frame with 1176 rows and 6 variables. The correlations are
+#' given in the order as the appear in the lower triangle of the full correlation
+#' matrix, by column. 
 #' @source \url{http://www.nature.com/ng/journal/vaop/ncurrent/extref/ng.3406-S2.csv}
 #' @references Bulik-Sullivan B, Finucane HK, Anttila V, Gusev A, Day FR, Loh P-R,
 #'    et al. An atlas of genetic correlations across human diseases and traits.
@@ -59,3 +61,23 @@ read_gcatlas = function(x)
 	if (missing(x)) x = "http://www.nature.com/ng/journal/vaop/ncurrent/extref/ng.3406-S2.csv"
 	read.csv(x)
 }	
+
+
+#' Select traits from the full atlas
+#'
+#' Subsets the a data frame with the same format as \code{\link{gcatlas}} to
+#' include only traits from a specified list of trait names. These names can be
+#' abbreviated.
+#'
+#' @param x a vector of trait names (possibly abbreviated)
+#' @param data the name of the object to subset; by default the full data set
+#' @param drop logical expression indicating whether to return the specified traits
+#' (\code{FALSE}, default) or to exlclude them from the data (\code{TRUE}).
+#'
+#' @seealso \code{\link{gcatlas}}
+sel_trt = function(x, data=gcatlas, drop=FALSE)
+{
+
+
+}
+
