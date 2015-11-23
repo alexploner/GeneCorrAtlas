@@ -1,0 +1,43 @@
+---
+title: "An R wrapper for 'An atlas of genetic correlations across human diseases and traits'"
+author: "Alexander Ploner"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{An R wrapper for 'Atlas of genetic correlations' (Bulik-Sullivan et al. 2015)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+In a recent publication [1], Bulik-Sullivan and co-authors presented a matrix of genome-wide genetic correlations derived via linkage-disequilibrium regression [2]. The resulting correlations are available both from the supplementary material of the original article and from github[3] in an easily readable, alas somewhat dry text format (.csv). This package wraps the data and offers simple, but hopefully convenient methods for extracting and displaying correlations for the whole collection or user-specified subsets thereof.
+
+## Data and data availability
+
+I have included a local copy, but there is also a simple reading function.
+
+## Selecting a subset of traits
+
+Often we are only interested in a subset of the traits. Function `sel_trt` allows to select a subset, specifying only abbreviated trait names. Note that these abbreviations are interpreted generously, and you have to take extra steps to enforce unique matches.
+
+## Extracting a (correlation-) matrix
+
+## Graphical display of all correlations for one trait
+
+Including confidence intervals, yay
+
+## Graphical comparison correlation patterns for two traits
+
+## Graphical overview of a correlation matrix
+
+TBD
+
+## References
+
+1. Bulik-Sullivan et al: Atlas
+
+2. Bulik-Sullivan et al: LD-regression
+
+3. Github link
+
+
+

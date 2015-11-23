@@ -9,3 +9,6 @@ Description: Bulik-Sullivan et al. recently (2105) published an atlas of genetic
 Depends: R (>= 3.2.2)
 License: GPL-3
 LazyData: true
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
