@@ -256,8 +256,6 @@ plotTrait = function(trait, data = gcatlas, conf=0.95, sort=TRUE, rlim=c(-0.5, 1
 	attr(dat, "ConfLevel") = conf
 	
 	## The plot
-	library(ggplot2)
-	
 	pl = ggplot(dat, aes(x = if(sort) stats::reorder(Trait, R) else Trait, 
 	                     y=R, ymin=pmax(LCL, min(rlim)), ymax=pmin(UCL, max(rlim))), 
 	                     environment=environment())
@@ -265,6 +263,7 @@ plotTrait = function(trait, data = gcatlas, conf=0.95, sort=TRUE, rlim=c(-0.5, 1
     pl = pl + geom_pointrange() 
     pl = pl + labs(x="Traits", y="Genetic correlation", title=tr)
     pl = pl + coord_flip()
+    pl = pl + cowplot::theme_cowplot()
     pl = pl + theme(axis.text.y = element_text(size=12))
     pl
 }
@@ -328,18 +327,16 @@ plotPairedTraits = function(xtr, ytr, data = gcatlas, co = 0.05)
 	attr(dat, "Cutoff") = co
 
 	## The plot
-	library(ggplot2)
-	library(cowplot)
-	
 	pl = ggplot(dat, aes(x=R_1, y=R_2, label=Trait, shape=Signif, color=Signif, vjust=-0.4))
 	pl = pl + geom_hline(yintercept=0, size=1, col="grey70")
 	pl = pl + geom_vline(xintercept=0, size=1, col="grey70")
 	pl = pl + geom_point() + geom_text(size=3, show_guide=FALSE)
 	pl = pl + labs(x=xtr, y=ytr)
+	pl = pl + cowplot::theme_cowplot()
 	pl = pl + theme(legend.position="top") 
 	pl = pl + scale_colour_manual(name="Statistical significance", values=c("grey70", "blue", "red", "purple"), drop=FALSE)
 	pl = pl + scale_shape_manual(name="Statistical significance", values=c(20, 16, 17, 15), drop=FALSE)
-	pl
+	pl 
 }	
 	
 
