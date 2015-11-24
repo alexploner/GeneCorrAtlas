@@ -91,11 +91,11 @@ traits = function(data=gcatlas)
 #' This function extracts any of the variables in the \code{gcatlas} 
 #' object and returns it as a square matrix, with traits as rows and columns.
 #'
-#' @param type The variable to extract, one of \code{rg} (default), \code{se}
-#'             \code{z} and \code{p}
 #' @param data The object from which to extract the variable - by default, 
 #'             the full \code{gcatlas} object, but a valid subset will 
 #'             work, too
+#' @param type The variable to extract, one of \code{rg} (default), \code{se}
+#'             \code{z} and \code{p}
 #' @param diag_value An optional value for the diagonal of the matrix; 
 #'                   if missing, the function will use a reasonable 
 #'                   default, based on the value of \code{type}
@@ -103,7 +103,7 @@ traits = function(data=gcatlas)
 #' @return A square numerical matrix
 #'
 #' @seealso \code{\link{gcatlas}}
-gcmatrix = function(type=c("rg", "se", "z", "p"), data=gcatlas, diag_value)
+gcmatrix = function(data=gcatlas, type=c("rg", "se", "z", "p"), diag_value)
 {
 	type = match.arg(type)
 	if (missing(diag_value)) {
@@ -180,7 +180,7 @@ match_trait_names = function(x, data = gcatlas, unique=FALSE)
 #' @examples
 #' x = sel_trt("ADHD", "Alz", "T2D")
 #' x
-#' gcmatrix(data=x)
+#' gcmatrix(x)
 sel_trt = function(..., data=gcatlas, drop=FALSE)
 {
 	args = list(...)
