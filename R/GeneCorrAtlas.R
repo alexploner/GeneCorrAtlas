@@ -194,6 +194,59 @@ sel_trt = function(..., data=gcatlas, drop=FALSE)
 	droplevels(subset(data, (Trait1 %in% full) & (Trait2 %in% full)))
 }
 
+#' Convert a correlation matrix to a distance matrix
+#'
+#' Two simple hepler functions that convert a matrix of correlations to
+#' a distance/dissimilarity matrix
+#'
+#' @param x A square matrix of correlations
+#'
+#' @return An object of class \code{dist}: \code{cor2dist} returns \eqn{1-r},
+#'         \code{cor2dist2} returns \eqn{1-|r|}. 
+#'
+#' @seealso \code{\link{stats::dist}}, \code{\link{gcheatmap}}
+cor2dist = function(x)
+{
+	as.dist(1 - x)
+}
+#' @rdname cord2dist
+cor2dist_abs = function(x)
+{
+	as.dist(1 - abs(x))
+}
+	
+#' Heatmap of genetic correlations
+#' 
+#' Plot a heatmap of genetic correlations
+#'
+#' @param data An object of the same structure as \code{gcatlas}
+#' @param distfun The function to convert a correlation matrix to a 
+#'                distance matrix for generating the dendrograms
+#' @param symm Logical switch indicating a heatmap of a symmetric matrix; 
+#'        passed on to \code{heatmap} and probably best left unchanged
+#' @param fix Logical expression indciating whether correlations outside 
+#'            of [-1,1] should be set to the limits
+#' @param ... Extra arguments passed on to \code{heatmap}
+#'
+#' @return Invisibly, the same as function \code{heatmap}. This function
+#'         is generally invoked to generate a plot.
+#'
+#' @seealso \code{\link{heatmap}}, \code{\link{cor2dist}}, \code{\link{gcatlas}}
+#'
+#' @examples
+#' ## Default heatmap of the full atlas
+#' gcheatmap()	
+gcheatmap = function(data=gcatlas, distfun=cor2dist, symm=TRUE, fix=TRUE,...)
+{
+	rr = gcmatrix(data)
+    if (fix) {
+        rr[rr>1]  = 1
+        rr[rr< (-1)] = -1
+    }
+    
+    heatmap(rr, distfun=distfun, symm=symm,  ...)
+}
+
 #' Plot all correlations with a specific trait
 #'
 #' Given the atlas of genetic correlations or a valid subset, plus a trait
