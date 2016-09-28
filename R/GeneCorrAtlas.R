@@ -209,7 +209,7 @@ cor2dist = function(x)
 {
 	as.dist(1 - x)
 }
-#' @rdname cord2dist
+#' @rdname cor2dist
 cor2dist_abs = function(x)
 {
 	as.dist(1 - abs(x))
