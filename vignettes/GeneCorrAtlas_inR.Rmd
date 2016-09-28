@@ -9,17 +9,66 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-In a recent publication [1], Bulik-Sullivan and co-authors presented a matrix of genome-wide genetic correlations derived via linkage-disequilibrium regression [2]. The resulting correlations are available both from the supplementary material of the original article and from github[3] in an easily readable, alas somewhat dry text format (.csv). This package wraps the data and offers simple, but hopefully convenient methods for extracting and displaying correlations for the whole collection or user-specified subsets thereof.
+In a recent publication[1], Bulik-Sullivan and co-authors presented a matrix of genome-wide genetic correlations derived via linkage-disequilibrium regression[2]. The resulting correlations are available both from the supplementary material of the original article and from github[3] in an easily readable, alas somewhat dry text format (.csv). This package wraps the data and offers simple, but hopefully convenient methods for extracting and displaying correlations for the whole collection or user-specified subsets thereof.
 
 ## Data and data availability
 
-I have included a local copy, but there is also a simple reading function.
+The package contains a local copy of the data, but includes also a reading function to (re-) download the data.
+
+Local copy:
+```{r data01}
+library(GeneCorrAtlas)
+head(gcatlas)
+```
+
+Same as the remote copy (on Github):
+```{r data02}
+mygc = read_gcatlas()
+all.equal(gcatlas, mygc)
+```
 
 ## Selecting a subset of traits
 
-Often we are only interested in a subset of the traits. Function `sel_trt` allows to select a subset, specifying only abbreviated trait names. Note that these abbreviations are interpreted generously, and you have to take extra steps to enforce unique matches.
+Often we are only interested in a subset of the traits. Function `sel_trt` allows selection of a subset, specifying only abbreviated trait names. Note that these abbreviations are interpreted generously, and you have to take extra steps to enforce unique matches.
+
+List all trait names:
+```{r subset01}
+traits()
+```
+
+Select some interesting looking traits, but do not spell them out:
+```{r subset02}
+sel_trt("Alz", "ADHD", "Bip", "Schizo")
+```
+Alternatively, we can specify a vector of names; this is often easier when working non-interactively:
+```{r subset03}
+shortlist = traits()[1:5]
+shortlist
+sel_trt(shortlist)
+```
+
+Note that `sel_trt` accepts partial and multiple matches:
+```{r subset04}
+sel_trt("BMI", "Height")
+```
+If we want to have unique matches, we need to specify a proper regular expression, like so:
+```{r subset05}
+sel_trt("^BMI$", "^Height$")
+```
+
+Extras: `sel_trt` has a `drop`-argument, so that the specified matches are dropped from the data rather tahn retained; and while it operates by default on the full atlas of genetic correlations, we can use the `data` argument to select from a subset. Below, we drop all traits that contain `BMI` in their name in the first step, then we select from resulting subset:
+```{r subset06}
+sub1 = sel_trt("BMI", drop=TRUE)
+traits(sub1)
+sel_trt("Alz", "Bip", "T2D", data=sub1)
+```
+
 
 ## Extracting a (correlation-) matrix
+
+## Graphical overview of a correlation matrix
+
+heatmap
 
 ## Graphical display of all correlations for one trait
 
@@ -27,17 +76,14 @@ Including confidence intervals, yay
 
 ## Graphical comparison correlation patterns for two traits
 
-## Graphical overview of a correlation matrix
-
-TBD
 
 ## References
 
-1. Bulik-Sullivan et al: Atlas
+1. Bulik-Sullivan, Brendan, Hilary K Finucane, Verneri Anttila, Alexander Gusev, Felix R Day, ReproGen Consortium, Psychiatric Genomics Consortium, et al. 'An Atlas of Genetic Correlations across Human Diseases and Traits', 27 January 2015. http://biorxiv.org/lookup/doi/10.1101/014498.
 
-2. Bulik-Sullivan et al: LD-regression
+2. Bulik-Sullivan, Brendan K., Po-Ru Loh, Hilary K. Finucane, Stephan Ripke, Jian Yang, Schizophrenia Working Group of the Psychiatric Genomics Consortium, Nick Patterson, Mark J. Daly, Alkes L. Price, and Benjamin M. Neale. 'LD Score Regression Distinguishes Confounding from Polygenicity in Genome-Wide Association Studies'. Nature Genetics 47, no. 3 (March 2015): 291-95. doi:10.1038/ng.3211.
 
-3. Github link
+3. <https://raw.githubusercontent.com/bulik/gencor/master/all_rg.csv>
 
 
 
