@@ -224,7 +224,12 @@ cor2dist_abs = function(x)
 #'                distance matrix for generating the dendrograms
 #' @param symm Logical switch indicating a heatmap of a symmetric matrix; 
 #'        passed on to \code{heatmap} and probably best left unchanged
-#' @param fix Logical expression indciating whether correlations outside 
+#' @param margins Numerical vector of length two, indicating how much 
+#'        space is reserved for the row/column labels. This is the same
+#'        argument as for \code{heatmap}, but with a different default
+#'        so that the trait names are reasonably readable with normal
+#'        device size 
+#' @param fix Logical expression indicating whether correlations outside 
 #'            of [-1,1] should be set to the limits
 #' @param ... Extra arguments passed on to \code{heatmap}
 #'
@@ -236,7 +241,7 @@ cor2dist_abs = function(x)
 #' @examples
 #' ## Default heatmap of the full atlas
 #' gcheatmap()	
-gcheatmap = function(data=gcatlas, distfun=cor2dist, symm=TRUE, fix=TRUE,...)
+gcheatmap = function(data=gcatlas, distfun=cor2dist, symm=TRUE, margins=c(9,9), fix=TRUE,...)
 {
 	rr = gcmatrix(data)
     if (fix) {
@@ -244,7 +249,7 @@ gcheatmap = function(data=gcatlas, distfun=cor2dist, symm=TRUE, fix=TRUE,...)
         rr[rr< (-1)] = -1
     }
     
-    heatmap(rr, distfun=distfun, symm=symm,  ...)
+    heatmap(rr, distfun=distfun, symm=symm, margins=margins, ...)
 }
 
 #' Plot all correlations with a specific trait
