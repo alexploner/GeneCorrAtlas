@@ -2,16 +2,19 @@
 title: "An R wrapper for 'An atlas of genetic correlations across human diseases and traits'"
 author: "Alexander Ploner"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: 
+    rmarkdown::html_vignette: 
+        toc: true
+abstract: In a recent publication[1], Bulik-Sullivan and co-authors presented a matrix of genome-wide genetic correlations derived via linkage-disequilibrium regression[2]. The resulting correlations are available both from the supplementary material of the original article and from github[3] in an easily readable, alas somewhat dry text format (.csv). This package wraps the data and offers simple, but hopefully convenient methods for extracting and displaying correlations for the whole collection or user-specified subsets thereof.
 vignette: >
   %\VignetteIndexEntry{An R wrapper for 'Atlas of genetic correlations' (Bulik-Sullivan et al. 2015)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-In a recent publication[1], Bulik-Sullivan and co-authors presented a matrix of genome-wide genetic correlations derived via linkage-disequilibrium regression[2]. The resulting correlations are available both from the supplementary material of the original article and from github[3] in an easily readable, alas somewhat dry text format (.csv). This package wraps the data and offers simple, but hopefully convenient methods for extracting and displaying correlations for the whole collection or user-specified subsets thereof.
+## Data extraction
 
-## Data and data availability
+### Data and data availability
 
 The package contains a local copy of the data, but includes also a reading function to (re-) download the data.
 
@@ -27,7 +30,7 @@ mygc = read_gcatlas()
 all.equal(gcatlas, mygc)
 ```
 
-## Selecting a subset of traits
+### Selecting a subset of traits
 
 Often we are only interested in a subset of the traits. Function `sel_trt` allows selection of a subset, specifying only abbreviated trait names. Note that these abbreviations are interpreted generously, and you have to take extra steps to enforce unique matches.
 
@@ -56,25 +59,75 @@ If we want to have unique matches, we need to specify a proper regular expressio
 sel_trt("^BMI$", "^Height$")
 ```
 
-Extras: `sel_trt` has a `drop`-argument, so that the specified matches are dropped from the data rather tahn retained; and while it operates by default on the full atlas of genetic correlations, we can use the `data` argument to select from a subset. Below, we drop all traits that contain `BMI` in their name in the first step, then we select from resulting subset:
+Extras: `sel_trt` has a `drop`-argument, so that the specified matches are dropped from the data rather than retained; and while it operates by default on the full atlas of genetic correlations, we can use the `data` argument to select from a subset. Below, we drop all traits that contain `BMI` in their name in the first step, then we select from resulting subset:
 ```{r subset06}
 sub1 = sel_trt("BMI", drop=TRUE)
 traits(sub1)
 sel_trt("Alz", "Bip", "T2D", data=sub1)
 ```
 
+### Extracting a (correlation-) matrix
 
-## Extracting a (correlation-) matrix
+In many situations it is more convenient to look at the actual matrix of genetic correlation coefficients instead of the more efficient lower triangular format they are provided in. The function `gcmatrix` returns a symmetric matrix of either correlation coefficients (the default), their standard errors, the corresponding z-statistics or p-values; these are for example the upper five rows and columns of the full correlation matrix:
+```{r matrix01}
+gcmatrix()[1:5, 1:5]
+```
 
-## Graphical overview of a correlation matrix
+By default, the full matrix is returned (and was just truncated above to save space); we can however specify instead any subset of the full data that corresponds to a sub-matrix of the full matrix. Luckily (?), this is exactly what `sel_trt` returns:
+```{r matrix02}
+gcmatrix(sel_trt("Depr", "Schiz", "Bipo", "ADHD", "Alz"))
+```
+(Note the genetic correlations greater then one in this example).
 
-heatmap
+If we want to study a matrix of standard errors etc. instead of the genetic correlations, we can specify this via the `type`-argument:
+```{r matrix03}
+gcmatrix(sel_trt("Depr", "Schiz", "Bipo", "ADHD", "Alz"), type="p")
+```
 
-## Graphical display of all correlations for one trait
+## Graphical display
 
-Including confidence intervals, yay
+### Overview of a correlation matrix
 
-## Graphical comparison correlation patterns for two traits
+The function `gcheatmap` provides a clustered heatmap, by default of all traits in the full data set.
+```{r heatmap01, out.width="750px", dpi=300, fig.width=10, fig.height=10}
+gcheatmap()
+```
+
+We can of course use the `sel_trt` function to zoom in on specific subsets of traits. E.g. below, we see two clearly separated clusters of traits, one related to obesity/BMI, the other to overall length. Noteably, underlying genetic drivers for birth length and -weight are more closely related to adult height than obesity, but form a distinct subcluster of their own among the height/length variables.
+
+```{r heatmap02, out.width="500px", dpi=300, fig.width=8, fig.height=8}
+gcheatmap(sel_trt(c("BMI", "Obesity", "Overweight", "Height", "Birth")))
+```
+
+### Display of all correlations for one trait
+
+We can easily plot all correlations with a specific trait of interest, with confidence intervals; by default, the correlations are sorted by size:
+```{r plotTrait01, out.width="500px", dpi=300, fig.width=8, fig.height=8}
+plotTrait("Cor")
+```
+
+Note that while we still can abbreviate the trait name, the specification must be unique, otherwise the function throws an error. On the other hand, we can again provide a `data`-argument if we only want to show correlations with a subsets of traits:
+```{r plotTrait02, out.width="500px", dpi=300, fig.width=7, fig.height=7}
+plotTrait("Cor", sel_trt("BMI", "Height", "Cor"))
+```
+
+
+### Comparison correlation patterns for two traits
+
+We can also create a scatterplot of genetic correlations for any pair of traits. Effectively, this is a scatter plot of two columns in the full genetic correlation matrix against each other. We find for example in the plot below that both depression (horizontal axis) and bipolar disorder (vertical axis) show strong genetic correlation with schizophrenia, and mild to moderate negative correlation with obesity. We also find that bipolar disorder is moderately positively correlated with age at smoking, college attendance, years of education, neck bone mass desnity and ADHD, while depression shows a range of correlations with these traits.  
+```{r plotPairedTrait01, out.width="500px", dpi=300, fig.width=5, fig.height=5}
+plotPairedTraits("Depression", "Bipolar")
+```
+
+One problem with this scatterplot is that it can get crowded and hard to read. For this situation, we can provide a significance level via the argument `co`, so that correlations that do not reach this level of significance are grayed out, while the statistically significant correlations are color- and symbol-coded: red triangles for significant correlation with the trait on the x-axis, blue dots for sígnificant correlation with the trait on the y-axis, and purple squares if a trait is signicantly correlated with both x- and y-trait:
+```{r plotPairedTrait02, out.width="500px", dpi=300, fig.width=5, fig.height=5}
+plotPairedTraits("Depression", "Bipolar", co=0.05)
+```
+
+We find that only the association with schizophrenia is significantly associated with both depression and bipolar disorder. In addition, despression is significantly associated with triglycerides (positively) and height (negatively); bipolar disorder is positively associated with college attendance, years of education, and neck bone mass density, and negatively with obesity, overweight and type 2 diabetes.
+
+
+
 
 
 ## References
