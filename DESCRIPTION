@@ -6,9 +6,15 @@ Description: Bulik-Sullivan et al. recently (2105) published an atlas of genetic
     correlations for 50 different traits. This package wraps the more than 1000
     correlation coefficients involved and offers convenient functions for display
     and plotting.
-Depends: R (>= 3.2.2), ggplot2
+Depends:
+    R (>= 3.2.2),
+    ggplot2
 License: GPL-3
 LazyData: true
-Suggests: knitr, rmarkdown
+Suggests:
+    knitr,
+    rmarkdown
 VignetteBuilder: knitr
-Imports: cowplot
+Imports:
+    cowplot
+RoxygenNote: 5.0.1
