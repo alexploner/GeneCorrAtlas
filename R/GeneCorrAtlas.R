@@ -283,9 +283,9 @@ gcheatmap = function(data=gcatlas, distfun=cor2dist, symm=TRUE, margins=c(9,9), 
 #' 
 #' ## Extract the plotting data
 #' x = plotTrait("Cor")
-#' x
+#' x$data
 #' ## Useful extra attributes
-#' attributes(x)
+#' attributes(x$data)
 plotTrait = function(trait, data = gcatlas, conf=0.95, sort=TRUE, rlim=c(-0.5, 1.0))
 {
 	## Check input
