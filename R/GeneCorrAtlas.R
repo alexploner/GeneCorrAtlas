@@ -330,14 +330,16 @@ plotTrait = function(trait, data = gcatlas, conf=0.95, sort=TRUE, rlim=c(-0.5, 1
 #'
 #' Given the atlas of genetic correlations or a valid subset, plus two trait
 #' names, this function produces a scatterplot of the genetic correlations
-#' of one trait against the genetic correlations of the other. 
+#' of one trait against the genetic correlations of the other. Correlations
+#' that are statistically significant at a given level can be highlighted.
 #'
 #' @param xtr,ytr The names of the traits to be displayed on the x- and 
 #'                y-axis; can be abbreviated, but must be unique.
 #' @param data Either the full atlas of genetic correlations (\code{gcatlas},
 #'             the default), or a valid subset, from which to draw correlations.
-#' @param co The cutoff under which to consider p-values to be
-#'           statistically significant
+#' @param co A numerical cutoff below which p-values are considered 
+#'           statistically significant. \code{NA} (the default) indicates
+#'           that no highlighting should take place.
 #'
 #' @return The plot as an ggplot2 object. Note that the plotting data 
 #'         can be easily extracted for further processing, see Examples.
@@ -345,23 +347,25 @@ plotTrait = function(trait, data = gcatlas, conf=0.95, sort=TRUE, rlim=c(-0.5, 1
 #' @seealso \code{\link{gcatlas}}, \code{\link{sel_trt}}
 #'
 #' @examples
-#' ## Default invocation
+#' ## Default invocation: no highlighting
 #' plotPairedTraits("ADHD", "Alz")
 #' 
-#' ## Change the cutoff 
+#' ## Correlations with p-values less than 0.01 are highlighted
 #' plotPairedTraits("ADHD", "Alz", co=0.01)
 #'
 #' ## Extract the data
-#' x = plotPairedTraits("Cor", "T2D")
+#' x = plotPairedTraits("Cor", "T2D", co=0.05)
 #' x$data
 #' ## Useful extra attributes
-#' attributes(x)
-plotPairedTraits = function(xtr, ytr, data = gcatlas, co = 0.05)
+#' attributes(x$data)
+plotPairedTraits = function(xtr, ytr, data = gcatlas, co = NA)
 {
 	## Check input
 	xtr = match_trait_names(xtr, data=data, unique = TRUE)
-	ytr = match_trait_names(ytr, data=data, unique = TRUE)	
-	if ((co <= 0) | (co >= 1)) stop("cutoff must be in (0,1)")
+	ytr = match_trait_names(ytr, data=data, unique = TRUE)
+	if (!is.na(co)) {	
+		if ((co <= 0) | (co >= 1)) stop("cutoff must be in (0,1)")
+	}
 	
 	## Extract correlations and p-values
 	rr = gcmatrix(data = data)
@@ -376,7 +380,11 @@ plotPairedTraits = function(xtr, ytr, data = gcatlas, co = 0.05)
 	pp  = pp[-ndx, ndx]
 	ss  = pp <= co
 	ss  = 2*ss[,1] + ss[,2]
-	signif = factor(ss, levels=0:3, labels=c("None", ytr, xtr, "Both"))
+	if (!is.na(co)) {
+		signif = factor(ss, levels=0:3, labels=c("None", ytr, xtr, "Both"))
+	} else {
+		signif = NA
+	}
 	dat = data.frame(Trait=nam, R=rr, p=pp, Signif=signif)
 	rownames(dat) = NULL
 	colnames(dat)[2:3] = paste0("R_", 1:2)
@@ -385,15 +393,20 @@ plotPairedTraits = function(xtr, ytr, data = gcatlas, co = 0.05)
 	attr(dat, "Cutoff") = co
 
 	## The plot
-	pl = ggplot(dat, aes(x=R_1, y=R_2, label=Trait, shape=Signif, color=Signif, vjust=-0.4))
+	pl = ggplot(dat, aes(x=R_1, y=R_2, label=Trait, vjust=-0.4))
 	pl = pl + geom_hline(yintercept=0, size=1, col="grey70")
 	pl = pl + geom_vline(xintercept=0, size=1, col="grey70")
-	pl = pl + geom_point() + geom_text(size=3, show.legend=FALSE)
 	pl = pl + labs(x=xtr, y=ytr)
 	pl = pl + cowplot::theme_cowplot()
 	pl = pl + theme(legend.position="top") 
-	pl = pl + scale_colour_manual(name="Statistical significance", values=c("grey70", "blue", "red", "purple"), drop=FALSE)
-	pl = pl + scale_shape_manual(name="Statistical significance", values=c(20, 16, 17, 15), drop=FALSE)
+	if (!is.na(co)) {
+		pl = pl + geom_point(aes(shape=Signif, color=Signif)) + geom_text(aes(color=Signif), size=3, show.legend=FALSE)
+		pl = pl + scale_colour_manual(name="Statistical significance", values=c("grey70", "blue", "red", "purple"), drop=FALSE)
+		pl = pl + scale_shape_manual(name="Statistical significance", values=c(20, 16, 17, 15), drop=FALSE)
+	} else {
+		pl = pl + geom_point() + geom_text(size=3)
+	}
+	
 	pl 
 }	
 	
