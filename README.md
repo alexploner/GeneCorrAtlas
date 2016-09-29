@@ -28,3 +28,7 @@ While you are at the R command line, have a look at the package vignette:
 vignette("GeneCorrAtlas_inR")
 ```
 This will give you a quick overview of how to access and display the data.
+
+## Disclaimer
+
+I'm not affiliated with the group that has calculated these correlations (see links above), I just provide tools for easy access to their excellent work.
