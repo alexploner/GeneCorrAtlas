@@ -53,6 +53,7 @@ NULL
 #'
 #' @return The data frame described at \code{\link{gcatlas}}
 #'
+#' @export
 #' @source \url{https://raw.githubusercontent.com/bulik/gencor/master/all_rg.csv}
 #' @references Bulik-Sullivan B, Finucane HK, Anttila V, Gusev A, Day FR, Loh P-R,
 #'    et al. An atlas of genetic correlations across human diseases and traits.
@@ -77,6 +78,7 @@ read_gcatlas = function(x, ...)
 #'
 #' @seealso \code{\link{gcatlas}}
 #'
+#' @export
 #' @examples
 #' traits()
 traits = function(data=gcatlas) 
@@ -102,6 +104,7 @@ traits = function(data=gcatlas)
 #'
 #' @return A square numerical matrix
 #'
+#' @export
 #' @seealso \code{\link{gcatlas}}
 gcmatrix = function(data=gcatlas, type=c("rg", "se", "z", "p"), diag_value)
 {
@@ -134,6 +137,7 @@ gcmatrix = function(data=gcatlas, type=c("rg", "se", "z", "p"), diag_value)
 #'               required; if \code{TRUE}, thorws an error if \code{x}
 #'               cannot be matched, or matches more than one trait
 #'
+#' @export
 #' @seealso \code{\link{gcatlas}}
 match_trait_names = function(x, data = gcatlas, unique=FALSE)
 {
@@ -177,6 +181,7 @@ match_trait_names = function(x, data = gcatlas, unique=FALSE)
 #'
 #' @seealso \code{\link{gcatlas}}
 #'
+#' @export
 #' @examples
 #' x = sel_trt("ADHD", "Alz", "T2D")
 #' x
@@ -204,12 +209,14 @@ sel_trt = function(..., data=gcatlas, drop=FALSE)
 #' @return An object of class \code{dist}: \code{cor2dist} returns \eqn{1-r},
 #'         \code{cor2dist2} returns \eqn{1-|r|}. 
 #'
+#' @export
 #' @seealso \code{\link{stats::dist}}, \code{\link{gcheatmap}}
 cor2dist = function(x)
 {
 	as.dist(1 - x)
 }
 #' @rdname cor2dist
+#' @export
 cor2dist_abs = function(x)
 {
 	as.dist(1 - abs(x))
@@ -238,6 +245,7 @@ cor2dist_abs = function(x)
 #'
 #' @seealso \code{\link{heatmap}}, \code{\link{cor2dist}}, \code{\link{gcatlas}}
 #'
+#' @export
 #' @examples
 #' ## Default heatmap of the full atlas
 #' gcheatmap()	
@@ -274,6 +282,7 @@ gcheatmap = function(data=gcatlas, distfun=cor2dist, symm=TRUE, margins=c(9,9), 
 #' 
 #' @seealso \code{\link{gcatlas}}, \code{\link{sel_trt}}
 #'
+#' @export
 #' @examples
 #' ## Default invocation
 #' plotTrait("ADHD")
@@ -346,6 +355,7 @@ plotTrait = function(trait, data = gcatlas, conf=0.95, sort=TRUE, rlim=c(-0.5, 1
 #' 
 #' @seealso \code{\link{gcatlas}}, \code{\link{sel_trt}}
 #'
+#' @export
 #' @examples
 #' ## Default invocation: no highlighting
 #' plotPairedTraits("ADHD", "Alz")
